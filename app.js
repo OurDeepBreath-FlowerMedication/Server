@@ -1,6 +1,9 @@
 const express = require('express');
 const {sequelize} = require('./models');
 const app = express();
+const moment = require('moment-timezone');
+
+moment.tz.setDefault('Asia/Seoul');
 
 // 라우터 연결
 const routin = require('./routes/routin');
