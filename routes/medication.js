@@ -22,6 +22,7 @@ router.post('/create', async (req, res)=>{
             medication_name : medication_name,
             medication_use : use_device
         })
+        res.send("Successfully Save");
     }catch(e){
         console.log(e);
     }

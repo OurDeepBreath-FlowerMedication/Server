@@ -39,6 +39,7 @@ router.get('/get', async(req, res)=>{
             res.json(todayDone);
         }else{
             res.status(550);
+            res.json(null);
         }
     }catch(e){
         res.status(500);
