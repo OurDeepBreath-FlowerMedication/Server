@@ -10,7 +10,7 @@ const doneCreate = () =>{
         try{
             const [divs, ] = await sequelize.query(`SELECT device_id FROM devices`);
             divs.forEach(async(div)=> {
-                const [routins, ] = await sequelize.query(`SELECT id, routin_day, time_start FROM routins WHERE device_id = '${div['device_id']}'`);
+                const [routins, ] = await sequelize.query(`SELECT * FROM routins WHERE device_id = '${div['device_id']}'`);
                 routins.forEach(async(routin)=>{
                     var days = routin['routin_day'].split(",");
                     if(days[dayIndex]=="1"){
@@ -19,13 +19,14 @@ const doneCreate = () =>{
                             routin_id :routin['id'],
                             is_done : false,
                             is_medication : false,
+                            name : routin['routin_name'],
                             start_at : routin['time_start']
                         })
                     }
                 })
 
                 const [medications, ] = await sequelize.query(
-                    `SELECT m.id, m.medication_day, r.time_start
+                    `SELECT m.id, m.medication_day, r.time_start, m.medication_name
                     FROM medications as m
                     JOIN routins as r on m.device_id = r.device_id AND m.medication_meal = r.routin_id 
                     WHERE m.device_id = '${div['device_id']}'`);
@@ -38,6 +39,7 @@ const doneCreate = () =>{
                             routin_id : medication['id'],
                             is_done : false,
                             is_medication : true,
+                            name : medication['medication_name'],
                             start_at : medication['time_start']
                         })
                     }

@@ -28,6 +28,11 @@ module.exports = class RoutinDone extends Sequelize.Model {
                 allowNull : false,
                 comment : "어떤 일정인지"
             },
+            name : {
+                type : Sequelize.STRING(100),
+                allowNull : false,
+                comment : "수행한 일정 명칭"
+            },
             start_at : {
                 type : Sequelize.TIME,
                 allowNull : false,
