@@ -20,7 +20,8 @@ const doneCreate = () =>{
                             is_done : false,
                             is_medication : false,
                             name : routin['routin_name'],
-                            start_at : routin['time_start']
+                            start_at : routin['time_start'],
+                            end_at : routin['time_end']
                         })
                     }
                 })
@@ -34,13 +35,20 @@ const doneCreate = () =>{
                     console.log(medication)
                     var days = medication['medication_day'].split(",");
                     if(days[dayIndex]=="1"){
+                        const [end_hour, end_minute, end_second] = medication['time_end'].split(':')
+                        let end_time = new Date();
+                        end_time.setHours(parseInt(end_hour), parseInt(end_minute), parseInt(end_second));
+                        
+                        // default로 등록한 식사 끝 30분 이후 안까지 약 섭취 
+                        end_time.setMinutes(end_time.getMinutes() + 30);
                         await RoutinDone.create({
                             device_id : div['device_id'],
                             routin_id : medication['id'],
                             is_done : false,
                             is_medication : true,
                             name : medication['medication_name'],
-                            start_at : medication['time_start']
+                            start_at : medication['time_start'],
+                            end_at : end_time.toTimeString().split(' ')[0];
                         })
                     }
                 })

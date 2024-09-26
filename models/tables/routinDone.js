@@ -36,7 +36,12 @@ module.exports = class RoutinDone extends Sequelize.Model {
             start_at : {
                 type : Sequelize.TIME,
                 allowNull : false,
-                comment : "일정을 순서대로 나열하기 위해"
+                comment : "일정을 순서대로 나열하기 위해 + 라즈베리 파이로 전송"
+            },
+            end_at : {
+                type : Sequelize.TIME,
+                allowNull : false,
+                comment : "라즈베리 파이로 전송"
             }
         },
         {
