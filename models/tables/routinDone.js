@@ -24,7 +24,7 @@ module.exports = class RoutinDone extends Sequelize.Model {
                 comment : "일정 수행 날짜/시간"
             },
             is_medication : {
-                type : Sequelize.BOOLEAN,
+                type : Sequelize.INTEGER,
                 allowNull : false,
                 comment : "어떤 일정인지"
             },

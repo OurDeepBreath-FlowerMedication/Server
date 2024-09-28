@@ -12,7 +12,7 @@ const done = require('./routes/done');
 
 // 매 6시 정각에 done 만들어지도록
 const {doneCreate} = require('./cron_done.js');
-doneCreate();
+//doneCreate();
 
 app.set('port', process.env.PORT || 3000);
 

@@ -18,7 +18,7 @@ const doneCreate = () =>{
                             device_id : div['device_id'],
                             routin_id :routin['id'],
                             is_done : false,
-                            is_medication : false,
+                            is_medication : -1,
                             name : routin['routin_name'],
                             start_at : routin['time_start'],
                             end_at : routin['time_end']
@@ -27,7 +27,7 @@ const doneCreate = () =>{
                 })
 
                 const [medications, ] = await sequelize.query(
-                    `SELECT m.id, m.medication_day, r.time_start, m.medication_name
+                    `SELECT m.id, m.medication_day, r.time_start, r.time_end, m.medication_name, m.medication_meal, m.medication_meal
                     FROM medications as m
                     JOIN routins as r on m.device_id = r.device_id AND m.medication_meal = r.routin_id 
                     WHERE m.device_id = '${div['device_id']}'`);
@@ -35,20 +35,35 @@ const doneCreate = () =>{
                     console.log(medication)
                     var days = medication['medication_day'].split(",");
                     if(days[dayIndex]=="1"){
+                        const [start_hour, start_minute, start_second] = medication['time_start'].split(':')
+                        let start_time = new Date();
+                        start_time.setHours(parseInt(start_hour), parseInt(start_minute), parseInt(start_second));
+                        
                         const [end_hour, end_minute, end_second] = medication['time_end'].split(':')
                         let end_time = new Date();
                         end_time.setHours(parseInt(end_hour), parseInt(end_minute), parseInt(end_second));
                         
+                        //식전 30분
+                        if(medication['medication_meal']==0){
+                            end_time = start_time;
+                            start_time.setMinutes(start_time.getMinutes() - 30);
+                        }
+                        //식후 30분
+                        else if(medication['medication_meal']==0){
+                            start_time.setMinutes(end_time.getMinutes() + 30);
+                        }
+                        
+                        
                         // default로 등록한 식사 끝 30분 이후 안까지 약 섭취 
-                        end_time.setMinutes(end_time.getMinutes() + 30);
+                        
                         await RoutinDone.create({
                             device_id : div['device_id'],
-                            routin_id : medication['id'],
+                            routin_id : medication['medication_meal'], //medication['id'],
                             is_done : false,
-                            is_medication : true,
+                            is_medication : medication['medication_meal'],
                             name : medication['medication_name'],
                             start_at : medication['time_start'],
-                            end_at : end_time.toTimeString().split(' ')[0];
+                            end_at : end_time.toTimeString().split(' ')[0]
                         })
                     }
                 })

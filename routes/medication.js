@@ -53,6 +53,29 @@ router.get('/get', async(req, res)=>{
     }
 });
 
+router.get('/check', async(req, res)=>{
+    let device_id = req.query.deviceID;
+    let meal_time = req.query.mealTime;
+    let mealDay = [false, false, false, false, false, false, false]
+    try{
+        const [medications, ] = await sequelize.query(`SELECT medication_day FROM medications WHERE device_id = '${device_id}' AND medication_meal = '${meal_time}`);
+        
+        if(medications!=undefined && medications.length > 0){
+            let dayList = medications[0]['medication_day'].split(",")
+            dayList.forEach(day => {
+                if(dayList[day]=='1'){
+                    mealDay[day] = true;
+                }
+            });
+            res.json(dayList);
+        }else{
+            res.status(550);
+        }
+    }catch(e){
+        res.status(500);
+    }
+});
+
 router.post('/delete', async(req, res)=>{
     let device_id = req.body.deviceID;
     let routin_id = req.body.id;
