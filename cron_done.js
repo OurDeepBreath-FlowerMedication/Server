@@ -16,7 +16,7 @@ const doneCreate = () =>{
                     if(days[dayIndex]=="1"){
                         await RoutinDone.create({
                             device_id : div['device_id'],
-                            routin_id :routin['id'],
+                            routin_id :routin['routin_id'],
                             is_done : false,
                             is_medication : -1,
                             name : routin['routin_name'],
@@ -35,6 +35,8 @@ const doneCreate = () =>{
                     console.log(medication)
                     var days = medication['medication_day'].split(",");
                     if(days[dayIndex]=="1"){
+                        
+                        // 식전 약 섭취 타임 setting만 유효함
                         const [start_hour, start_minute, start_second] = medication['time_start'].split(':')
                         let start_time = new Date();
                         start_time.setHours(parseInt(start_hour), parseInt(start_minute), parseInt(start_second));
@@ -48,10 +50,6 @@ const doneCreate = () =>{
                             end_time = start_time;
                             start_time.setMinutes(start_time.getMinutes() - 30);
                         }
-                        //식후 30분
-                        else if(medication['medication_meal']==0){
-                            start_time.setMinutes(end_time.getMinutes() + 30);
-                        }
                         
                         
                         // default로 등록한 식사 끝 30분 이후 안까지 약 섭취 
@@ -62,7 +60,7 @@ const doneCreate = () =>{
                             is_done : false,
                             is_medication : medication['medication_meal'],
                             name : medication['medication_name'],
-                            start_at : medication['time_start'],
+                            start_at : start_time.toTimeString().split(' ')[0],
                             end_at : end_time.toTimeString().split(' ')[0]
                         })
                     }

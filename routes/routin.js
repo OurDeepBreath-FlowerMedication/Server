@@ -41,8 +41,9 @@ router.post('/create', async (req, res)=>{
             time_end : `${end_hour}:${end_minute}:00`,
             routin_name : routin_name
         })
-        res.send("Successfully Save");
+        res.json({success: true});
     }catch(e){
+        res.json({success: false});
         console.log(e);
     }
 });

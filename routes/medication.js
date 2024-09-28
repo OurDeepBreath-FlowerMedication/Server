@@ -22,8 +22,9 @@ router.post('/create', async (req, res)=>{
             medication_name : medication_name,
             medication_use : use_device
         })
-        res.send("Successfully Save");
+        res.json({success: true});
     }catch(e){
+        res.json({success: false});
         console.log(e);
     }
 });
@@ -59,7 +60,6 @@ router.get('/check', async(req, res)=>{
     let mealDay = [false, false, false, false, false, false, false]
     try{
         const [medications, ] = await sequelize.query(`SELECT medication_day FROM medications WHERE device_id = '${device_id}' AND medication_meal = ${meal_time}`);
-        
         if(medications!=undefined && medications.length > 0){
             let dayList = medications[0]['medication_day'].split(",")
             dayList.forEach((isEat, day) => {
@@ -67,10 +67,9 @@ router.get('/check', async(req, res)=>{
                     mealDay[day] = true;
                 }
             });
-            res.json(mealDay);
-        }else{
-            res.status(550);
+            
         }
+        res.json(mealDay);
     }catch(e){
         res.status(500);
     }
