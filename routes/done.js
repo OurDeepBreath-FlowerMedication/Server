@@ -60,4 +60,16 @@ router.get('/getrsp', async(req, res)=>{
     }
 });
 
+// 라즈베리 파이 수행 후 업데잍트
+router.get('/update', async(req, res)=>{
+    let device_id = req.query.deviceID;
+    let done_id = req.query.doneID;
+    try{
+        const [ , ] = await sequelize.query(`UPDATE routindones SET is_done = true WHERE device_id = '${device_id}' AND id = ${done_id}`);
+        res.json({success: true});
+    }catch(e){
+        res.status(500);
+    }
+});
+
 module.exports = router;  
