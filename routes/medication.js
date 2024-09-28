@@ -58,16 +58,16 @@ router.get('/check', async(req, res)=>{
     let meal_time = req.query.mealTime;
     let mealDay = [false, false, false, false, false, false, false]
     try{
-        const [medications, ] = await sequelize.query(`SELECT medication_day FROM medications WHERE device_id = '${device_id}' AND medication_meal = '${meal_time}`);
+        const [medications, ] = await sequelize.query(`SELECT medication_day FROM medications WHERE device_id = '${device_id}' AND medication_meal = ${meal_time}`);
         
         if(medications!=undefined && medications.length > 0){
             let dayList = medications[0]['medication_day'].split(",")
-            dayList.forEach(day => {
-                if(dayList[day]=='1'){
+            dayList.forEach((isEat, day) => {
+                if(isEat=='1'){
                     mealDay[day] = true;
                 }
             });
-            res.json(dayList);
+            res.json(mealDay);
         }else{
             res.status(550);
         }
