@@ -31,4 +31,33 @@ router.get('/get', async(req, res)=>{
     }
 });
 
+// 라즈베리 파이에서 일정 관리하기 위해 호출
+router.get('/getrsp', async(req, res)=>{
+    let device_id = req.query.deviceID;
+    try{
+        const [dones, ] = await sequelize.query(`SELECT * FROM routindones 
+        WHERE device_id = '${device_id}' AND DATE(created_at) = CURDATE()
+        ORDER BY start_at ASC;`);
+        if(dones!=undefined && dones.length > 0){
+            const todayDonePromises = dones.map(async(done)=>{
+                return{
+                    id : done["id"],
+                    schedule_name : done["name"],
+                    routin_id : done["routin_id"],
+                    is_medication : done["is_medication"],
+                    start_at : done["start_at"],
+                    end_at : done["end_at"]
+                }
+            });
+            const todayDone = await Promise.all(todayDonePromises)
+            res.json(todayDone);
+        }else{
+            res.status(550);
+            res.json(null);
+        }
+    }catch(e){
+        res.status(500);
+    }
+});
+
 module.exports = router;  
