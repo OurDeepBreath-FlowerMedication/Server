@@ -41,10 +41,6 @@ const doneCreate = () =>{
                         let start_time = new Date();
                         start_time.setHours(parseInt(start_hour), parseInt(start_minute), parseInt(start_second));
                         
-                        const [end_hour, end_minute, end_second] = medication['time_end'].split(':')
-                        let end_time = new Date();
-                        end_time.setHours(parseInt(end_hour), parseInt(end_minute), parseInt(end_second));
-                        
                         //식전 30분
                         if(medication['medication_interval']==0){
                             end_time = start_time;
@@ -61,7 +57,7 @@ const doneCreate = () =>{
                             is_medication : medication['medication_interval'],
                             name : medication['medication_name'],
                             start_at : start_time.toTimeString().split(' ')[0],
-                            end_at : end_time.toTimeString().split(' ')[0]
+                            end_at : medication['end_time']
                         })
                     }
                 })
