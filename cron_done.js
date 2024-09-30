@@ -43,13 +43,10 @@ const doneCreate = () =>{
                         
                         //식전 30분
                         if(medication['medication_interval']==0){
-                            end_time = start_time;
                             start_time.setMinutes(start_time.getMinutes() - 30);
                         }
                         
-                        
-                        // default로 등록한 식사 끝 30분 이후 안까지 약 섭취 
-                        
+                        // default로 등록한 식사 끝 30분 이후 안까지 약 섭취                  
                         await RoutinDone.create({
                             device_id : div['device_id'],
                             routin_id : medication['medication_meal'], //medication['id'],
@@ -57,7 +54,7 @@ const doneCreate = () =>{
                             is_medication : medication['medication_interval'],
                             name : medication['medication_name'],
                             start_at : start_time.toTimeString().split(' ')[0],
-                            end_at : medication['end_time']
+                            end_at : medication['time_end']
                         })
                     }
                 })
