@@ -65,8 +65,11 @@ router.get('/update', async(req, res)=>{
     let device_id = req.query.deviceID;
     let done_id = req.query.doneID;
     try{
-        const [ , ] = await sequelize.query(`UPDATE routindones SET is_done = true WHERE device_id = '${device_id}' AND id = ${done_id}`);
-        res.json({success: true});
+        await RoutinDone.update(
+            { is_done: true }, // 업데이트할 필드
+            { where: { device_id: device_id, id: done_id } } // 조건
+        );
+        res.json({ success: true });
     }catch(e){
         res.status(500);
     }
