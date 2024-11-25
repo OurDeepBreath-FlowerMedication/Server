@@ -14,7 +14,7 @@ module.exports = class DelList extends Sequelize.Model {
                 comment : "디바이스 아이디"
             }, 
             is_medication : {
-                type : Boolean,
+                type : Sequelize.Boolean,
                 allowNull : false,
                 comment : "어떤 일정에 대한 삭제인지 결정"
             },

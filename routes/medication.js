@@ -37,7 +37,7 @@ router.get('/get', async(req, res)=>{
         SELECT * FROM medications 
         WHERE device_id = '${device_id}' AND id NOT IN(
             SELECT del_id FROM dellists 
-            WHERE is_medication = true AND device_id = '${device_id}')`);
+            WHERE del_id IS NOT NULL AND is_medication = true AND device_id = '${device_id}')`);
         
         if(medications!=undefined && medications.length > 0){
             const medicationList = medications.map(medication => {
