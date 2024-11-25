@@ -5,7 +5,7 @@ const { sequelize } = require('./models');
 const RoutinDone = require('./models/tables/routinDone');
 
 const doneCreate = () =>{
-    cron.schedule('0 * * * * *', async() => {
+    cron.schedule('0 0 6 * * *', async() => {
         const dayIndex = (new Date().getDay()+6)%7;
         try{
             const [divs, ] = await sequelize.query(`SELECT device_id FROM devices`);

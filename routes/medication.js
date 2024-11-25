@@ -4,6 +4,7 @@ const router = express.Router();
 const { sequelize } = require('../models');
 
 const Medication = require('../models/tables/medication');
+const DelList = require('../models/tables/dellist');
 
 router.post('/create', async (req, res)=>{
     let device_id = req.query.deviceID;
@@ -32,7 +33,11 @@ router.post('/create', async (req, res)=>{
 router.get('/get', async(req, res)=>{
     let device_id = req.query.deviceID;
     try{
-        const [medications, ] = await sequelize.query(`SELECT * FROM medications WHERE device_id = '${device_id}'`);
+        const [medications, ] = await sequelize.query(`
+        SELECT * FROM medications 
+        WHERE device_id = '${device_id}' AND id NOT IN(
+            SELECT del_id FROM dellists 
+            WHERE is_medication = true AND device_id = '${device_id}')`);
         
         if(medications!=undefined && medications.length > 0){
             const medicationList = medications.map(medication => {
@@ -81,8 +86,15 @@ router.post('/delete', async(req, res)=>{
     let routin_id = req.body.id;
     
     try{
-        await sequelize.query(`DELETE FROM medications WHERE device_id = '${device_id}' AND id = '${routin_id}'`);
+        DelList.create({
+            device_id : device_id, 
+            is_medication : true,
+            del_id : routin_id
+        })
+        res.json({success: true});
+        //await sequelize.query(`DELETE FROM medications WHERE device_id = '${device_id}' AND id = '${routin_id}'`);
     }catch(e){
+        res.json({success: false});
         res.status(500);
     } 
 });
