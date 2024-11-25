@@ -5,12 +5,15 @@ const { sequelize } = require('./models');
 const RoutinDone = require('./models/tables/routinDone');
 
 const doneCreate = () =>{
-    cron.schedule('0 0 6 * * *', async() => {
+    cron.schedule('0 0 0 * * *', async() => {
         const dayIndex = (new Date().getDay()+6)%7;
         try{
             const [divs, ] = await sequelize.query(`SELECT device_id FROM devices`);
             divs.forEach(async(div)=> {
-                const [routins, ] = await sequelize.query(`SELECT * FROM routins WHERE device_id = '${div['device_id']}'`);
+                const [routins, ] = await sequelize.query(`SELECT * FROM routins WHERE device_id = '${div['device_id']}'
+                AND id NOT IN(
+                    SELECT del_id FROM dellists 
+                    WHERE del_id IS NOT NULL AND is_medication = false AND device_id = '${device_id}') `);
                 routins.forEach(async(routin)=>{
                     var days = routin['routin_day'].split(",");
                     if(days[dayIndex]=="1"){
@@ -30,7 +33,10 @@ const doneCreate = () =>{
                     `SELECT m.id, m.medication_day, r.time_start, r.time_end, m.medication_name, m.medication_meal, m.medication_interval
                     FROM medications as m
                     JOIN routins as r on m.device_id = r.device_id AND m.medication_meal = r.routin_id 
-                    WHERE m.device_id = '${div['device_id']}'`);
+                    WHERE m.device_id = '${div['device_id']}'
+                    AND m.id NOT IN(
+                        SELECT del_id FROM dellists 
+                        WHERE del_id IS NOT NULL AND is_medication = false AND device_id = '${device_id}') `);
                 medications.forEach(async(medication)=>{
                     console.log(medication)
                     var days = medication['medication_day'].split(",");

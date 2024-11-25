@@ -14,8 +14,7 @@ module.exports = class DelList extends Sequelize.Model {
                 comment : "디바이스 아이디"
             }, 
             is_medication : {
-                type : Sequelize.Boolean,
-                allowNull : false,
+                type : Sequelize.BOOLEAN,
                 comment : "어떤 일정에 대한 삭제인지 결정"
             },
             del_id : {
@@ -28,7 +27,7 @@ module.exports = class DelList extends Sequelize.Model {
             sequelize,
             underscored : true,
             modelName : 'DelList',
-            tableName : 'dlelists',
+            tableName : 'dellists',
             charset : 'utf8',
             collate : 'utf8_general_ci',
             paranoid : false,
